@@ -10,6 +10,7 @@ requests = "*"
 redis = "*"
 celery = "*"
 djangorestframework = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

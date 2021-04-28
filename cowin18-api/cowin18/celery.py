@@ -13,7 +13,12 @@ app = Celery("cowin18")
 app.conf.broker_url = REDIS_URL
 app.conf.result_expires = 3600
 app.conf.timezone = settings.TIME_ZONE
-# app.conf.imports = ""
-app.conf.beat_schedule = {}
+app.conf.imports = "centers.jobs"
+app.conf.beat_schedule = {
+    "fetch_available_centers": {
+        "task": "cowin18.fetch_available_centers",
+        "schedule": crontab(minute="*/30"),
+    }
+}
 
 app.autodiscover_tasks()

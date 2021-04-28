@@ -22,6 +22,19 @@ def fetch_available_centers():
         )
 
 
+def structure_center_details(center):
+    sessions = center.pop("sessions", [])
+    _ = center.pop("vaccine_fees", [])
+    center_sessions = []
+    for session in sessions:
+        if session["min_age_limit"] < 45:
+            center_copy = center.copy()
+            center_copy.update(session)
+            center_sessions.append(center_copy)
+
+    return center_sessions
+
+
 def query_available_centers(district_id):
     date = datetime.now() + timedelta(days=1)
     date_str = date.strftime("%d-%m-%Y")
@@ -33,7 +46,11 @@ def query_available_centers(district_id):
         for center in data["centers"]
         if any(session["min_age_limit"] < 45 for session in center["sessions"])
     ]
-    return centers
+    center_details = []
+    for center in centers:
+        center_details.extend(structure_center_details(center))
+
+    return center_details
 
 
 @app.task

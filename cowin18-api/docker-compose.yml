@@ -1,0 +1,44 @@
+version: "3.7"
+
+x-services:
+  cowin18: &cowin18
+    hostname: cowin18
+    env_file:
+      - ops/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+    restart: on-failure:5
+    volumes:
+      - .:/code
+      - cowin18-ipython:/root/.ipython
+
+services:
+  webserver:
+    <<: *cowin18
+    container_name: cowin18-webserver
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: redis
+    container_name: cowin18-redis
+    volumes:
+      - cowin18-data-redis:/data
+
+  celery:
+    <<: *cowin18
+    container_name: cowin18-celery
+    command: celery -A cowin18 worker --concurrency=20 --loglevel=info
+
+  celery-beat:
+    <<: *cowin18
+    container_name: cowin18-celery-beat
+    command: celery -A cowin18 beat --loglevel=info
+
+volumes:
+  cowin18-ipython:
+  cowin18-data-redis:

@@ -25,5 +25,14 @@ DISTRICT_IDS = [
     581,  # Hyderabad
     725,  # Kolkata
 ]
+DISTRICT_IDS_AND_DISTRICTS = [
+    {"id": 571, "name": "Chennai"},
+    {"id": 265, "name": "Bangalore Urban"},
+    {"id": 395, "name": "Mumbai"},
+    {"id": 307, "name": "Ernakulam"},
+    {"id": 140, "name": "New Delhi"},
+    {"id": 581, "name": "Hyderabad"},
+    {"id": 725, "name": "Kolkata"},
+]
 
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"

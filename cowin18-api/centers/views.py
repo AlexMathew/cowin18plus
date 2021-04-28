@@ -5,15 +5,16 @@ from rest_framework.response import Response
 
 from helpers.instances import redis
 
-from .constants import DISTRICT_IDS, DISTRICT_KEY
+from .constants import DISTRICT_IDS, DISTRICT_KEY, DISTRICT_IDS_AND_DISTRICTS
 
 
 class CentersListView(APIView):
     def get(self, request):
-        data = {
+        centers = {
             DISTRICT_KEY(district_id): json.loads(
                 redis.get(DISTRICT_KEY(district_id)) or "null"
             )
             for district_id in DISTRICT_IDS
         }
+        data = {"districts": DISTRICT_IDS_AND_DISTRICTS, "centers": centers}
         return Response(data)

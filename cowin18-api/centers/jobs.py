@@ -8,10 +8,9 @@ import redis
 from cowin18.celery import app
 from helpers.instances import redis
 
+from .constants import DISTRICT_IDS, DISTRICT_KEY
+
 logger = logging.getLogger(__name__)
-
-
-DISTRICT_IDS = [571]
 
 
 @app.task(name="cowin18.fetch_available_centers")
@@ -41,4 +40,4 @@ def query_available_centers(district_id):
 def fetch_district(district_id):
     logger.info(f"Fetching for district - {district_id}")
     centers = query_available_centers(district_id)
-    redis.set(f"DISTRICT_{district_id}", json.dumps(centers))
+    redis.set(DISTRICT_KEY(district_id), json.dumps(centers))

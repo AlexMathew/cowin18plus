@@ -27,7 +27,11 @@ SECRET_KEY = "django-insecure-c48n0qd@0q=8kq--jb6(ikmhk#16=_u389fb&txv(3_uq2hs89
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get("DEBUG") == "true" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "rsb0w6kv1i.execute-api.us-east-1.amazonaws.com",
+]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -82,8 +86,12 @@ WSGI_APPLICATION = "cowin18.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("POSTGRES_DATABASE"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
 

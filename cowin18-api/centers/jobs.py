@@ -5,17 +5,22 @@ from time import sleep
 
 import requests
 import redis
+from django.conf import settings
 
 from cowin18.celery import app
 from helpers.instances import redis
 
-from .constants import DISTRICT_IDS, DISTRICT_KEY
+from .constants import DISTRICT_IDS, DISTRICT_KEY, LOCAL_NGROK_URL
 
 logger = logging.getLogger(__name__)
 
 
 @app.task(name="cowin18.fetch_available_centers")
 def fetch_available_centers():
+    if settings.IS_SERVER:
+        logger.info("fetch_available_centers will not be run on the server")
+        return
+
     logger.info("fetch_available_centers")
     for district_id in DISTRICT_IDS:
         fetch_district.apply_async(
@@ -64,4 +69,22 @@ def fetch_district(district_id):
     sleep(1)
     logger.info(f"Fetching for district - {district_id}")
     centers = query_available_centers(district_id)
-    redis.set(DISTRICT_KEY(district_id), json.dumps(centers))
+    if centers:
+        redis.set(DISTRICT_KEY(district_id), json.dumps(centers))
+
+
+"""
+Super hacky stuff. We can't make requests to the CoWin endpoint from AWS. 
+So instead, I'm not running it locally, then querying the local API and populating
+in prod from that.
+"""
+
+
+@app.task(name="cowin18.fetch_data_from_local")
+def fetch_data_from_local():
+    if settings.IS_SERVER:
+        url = f"{LOCAL_NGROK_URL}/api/v1/centers/"
+        r = requests.get(url)
+        data = r.json()
+        for district, centers in data["centers"]:
+            redis.set(district, json.dumps(centers))

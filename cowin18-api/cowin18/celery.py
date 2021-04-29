@@ -18,7 +18,11 @@ app.conf.beat_schedule = {
     "fetch_available_centers": {
         "task": "cowin18.fetch_available_centers",
         "schedule": crontab(minute="*/30"),
-    }
+    },
+    "fetch_data_from_local": {
+        "task": "cowin18.fetch_data_from_local",
+        "schedule": crontab(minute="*/15"),
+    },
 }
 
 app.autodiscover_tasks()

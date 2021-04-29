@@ -36,3 +36,5 @@ DISTRICT_IDS_AND_DISTRICTS = [
 ]
 
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"
+
+LOCAL_NGROK_URL = "https://fb8e6e92877c.ngrok.io"

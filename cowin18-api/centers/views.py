@@ -16,8 +16,9 @@ from .constants import (
 class CentersListView(APIView):
     def get(self, request):
         centers = {
-            DISTRICT_KEY(district_id): json.loads(
-                redis.get(DISTRICT_KEY(district_id)) or "null"
+            DISTRICT_KEY(district_id): sorted(
+                json.loads(redis.get(DISTRICT_KEY(district_id)) or "[]"),
+                key=lambda center: center["name"],
             )
             for district_id in DISTRICT_IDS
         }

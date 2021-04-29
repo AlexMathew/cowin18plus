@@ -37,6 +37,8 @@ class App extends React.Component {
       districtsById: _.keyBy(districts, "id"),
       updated,
       centers,
+      selectedDistrict: "571",
+      selectedDistrictName: "Chennai",
     });
   }
 

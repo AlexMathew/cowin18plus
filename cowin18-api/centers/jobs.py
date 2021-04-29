@@ -10,7 +10,12 @@ from django.conf import settings
 from cowin18.celery import app
 from helpers.instances import redis
 
-from .constants import DISTRICT_IDS, DISTRICT_KEY, LOCAL_NGROK_URL
+from .constants import (
+    DISTRICT_IDS,
+    DISTRICT_KEY,
+    DISTRICT_UPDATE_TIME_KEY,
+    LOCAL_NGROK_URL,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +74,9 @@ def fetch_district(district_id):
     sleep(1)
     logger.info(f"Fetching for district - {district_id}")
     centers = query_available_centers(district_id)
-    if centers is None:
+    if centers is not None:
         redis.set(DISTRICT_KEY(district_id), json.dumps(centers))
+        redis.set(DISTRICT_UPDATE_TIME_KEY(district_id), datetime.now().strftime("%c"))
 
 
 """
@@ -86,5 +92,5 @@ def fetch_data_from_local():
         url = f"{LOCAL_NGROK_URL}/api/v1/centers/"
         r = requests.get(url)
         data = r.json()
-        for district, centers in data["centers"]:
+        for district, centers in data["centers"].items():
             redis.set(district, json.dumps(centers))

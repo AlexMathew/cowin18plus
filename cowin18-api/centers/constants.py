@@ -28,17 +28,18 @@ directory = os.path.dirname(__file__)
 DISTRICT_IDS_AND_DISTRICTS = sorted(
     [
         {"id": 571, "name": "Chennai"},
-        {"id": 265, "name": "Bangalore Urban"},
-        {"id": 395, "name": "Mumbai"},
-        {"id": 307, "name": "Ernakulam"},
-        {"id": 140, "name": "New Delhi"},
-        {"id": 581, "name": "Hyderabad"},
-        {"id": 725, "name": "Kolkata"},
+        # {"id": 265, "name": "Bangalore Urban"},
+        # {"id": 395, "name": "Mumbai"},
+        # {"id": 307, "name": "Ernakulam"},
+        # {"id": 140, "name": "New Delhi"},
+        # {"id": 581, "name": "Hyderabad"},
+        # {"id": 725, "name": "Kolkata"},
     ],
     key=lambda district: district["name"],
 )
 DISTRICT_IDS = [district["id"] for district in DISTRICT_IDS_AND_DISTRICTS]
 
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"
+DISTRICT_UPDATE_TIME_KEY = lambda district_id: f"DISTRICT_UPDATED_{district_id}"
 
 LOCAL_NGROK_URL = "https://fb8e6e92877c.ngrok.io"

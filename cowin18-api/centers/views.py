@@ -23,7 +23,10 @@ class CentersListView(APIView):
         }
         updated = {
             DISTRICT_UPDATE_TIME_KEY(district_id): (
-                redis.get(DISTRICT_UPDATE_TIME_KEY(district_id)).decode("utf-8") or None
+                (redis.get(DISTRICT_UPDATE_TIME_KEY(district_id)) or b"").decode(
+                    "utf-8"
+                )
+                or None
             )
             for district_id in DISTRICT_IDS
         }

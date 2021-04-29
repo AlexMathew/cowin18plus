@@ -94,3 +94,5 @@ def fetch_data_from_local():
         data = r.json()
         for district, centers in data["centers"].items():
             redis.set(district, json.dumps(centers))
+        for district, updated in data["updated"].items():
+            redis.set(district, json.dumps(updated))

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "rsb0w6kv1i.execute-api.us-east-1.amazonaws.com",
+    "fb8e6e92877c.ngrok.io",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True

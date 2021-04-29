@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let BASE_URL = "https://rsb0w6kv1i.execute-api.us-east-1.amazonaws.com/dev";
+let BASE_URL = "https://fb8e6e92877c.ngrok.io";
 if (process.env.NODE_ENV === "development") {
   BASE_URL = "http://localhost:8000";
 }

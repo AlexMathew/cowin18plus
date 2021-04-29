@@ -21,6 +21,7 @@ class App extends React.Component {
   state = {
     districts: [],
     districtsById: {},
+    updated: {},
     centers: {},
     selectedDistrict: "",
     selectedDistrictName: "",
@@ -29,10 +30,12 @@ class App extends React.Component {
   async componentDidMount() {
     const resp = await cowin18.get("/centers/");
     const centers = resp.data.centers;
+    const updated = resp.data.updated;
     const districts = resp.data.districts;
     this.setState({
       districts,
       districtsById: _.keyBy(districts, "id"),
+      updated,
       centers,
     });
   }
@@ -47,11 +50,18 @@ class App extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const lastUpdated = this.state.selectedDistrict
+      ? `${this.state.selectedDistrictName}: Last updated - ${
+          this.state.updated?.[
+            `DISTRICT_UPDATED_${this.state.selectedDistrict}`
+          ] ?? "never"
+        }`
+      : "";
 
     return (
       <div>
         <MuiAlert elevation={2} variant="filled" severity="warning">
-          The data here could be outdated.
+          The data here could be outdated. {lastUpdated}
         </MuiAlert>
         <FormControl className={classes.formControl}>
           <InputLabel id="city-selector-label">City</InputLabel>

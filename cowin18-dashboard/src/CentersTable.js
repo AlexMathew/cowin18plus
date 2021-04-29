@@ -12,13 +12,13 @@ class CentersTable extends React.Component {
       width: 150,
     },
     { field: "date", headerName: "Session Date", width: 250 },
-    { field: "available_capacity", headerName: "Available Slots", width: 250 },
+    { field: "available_capacity", headerName: "Available Slots", width: 200 },
     { field: "vaccine", headerName: "Vaccine", width: 250 },
   ];
 
   render() {
     return (
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 800, width: "100%" }}>
         <DataGrid rows={this.props.data} columns={this.columns} pageSize={50} />
       </div>
     );

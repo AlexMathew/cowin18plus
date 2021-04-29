@@ -6,6 +6,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import MuiAlert from "@material-ui/lab/Alert";
 import cowin18 from "./api/cowin18";
 import CentersTable from "./CentersTable";
 
@@ -49,6 +50,9 @@ class App extends React.Component {
 
     return (
       <div>
+        <MuiAlert elevation={2} variant="filled" severity="warning">
+          The data here could be outdated.
+        </MuiAlert>
         <FormControl className={classes.formControl}>
           <InputLabel id="city-selector-label">City</InputLabel>
           <Select

@@ -18,7 +18,7 @@ class CentersTable extends React.Component {
 
   render() {
     return (
-      <div style={{ height: 800, width: "100%" }}>
+      <div style={{ height: 600, width: "100%" }}>
         <DataGrid rows={this.props.data} columns={this.columns} pageSize={50} />
       </div>
     );

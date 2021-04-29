@@ -69,7 +69,7 @@ def fetch_district(district_id):
     sleep(1)
     logger.info(f"Fetching for district - {district_id}")
     centers = query_available_centers(district_id)
-    if centers:
+    if centers is None:
         redis.set(DISTRICT_KEY(district_id), json.dumps(centers))
 
 

@@ -15,10 +15,10 @@ app.conf.result_expires = 3600
 app.conf.timezone = settings.TIME_ZONE
 app.conf.imports = "centers.jobs"
 app.conf.beat_schedule = {
-    # "fetch_available_centers": {
-    #     "task": "cowin18.fetch_available_centers",
-    #     "schedule": crontab(minute="*/30"),
-    # },
+    "fetch_available_centers": {
+        "task": "cowin18.fetch_available_centers",
+        "schedule": crontab(minute="*/10"),
+    },
     # "fetch_data_from_local": {
     #     "task": "cowin18.fetch_data_from_local",
     #     "schedule": crontab(minute="*/15"),

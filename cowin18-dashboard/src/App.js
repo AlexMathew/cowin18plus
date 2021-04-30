@@ -44,14 +44,18 @@ class App extends React.Component {
         states,
         districts,
       });
+      this.preselectFromUrlParams();
     } catch (error) {
       console.log(error);
     } finally {
       this.setState({ loading: false });
     }
+  }
+
+  preselectFromUrlParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const state = urlParams.get("state");
-    // const district = urlParams.get("district");
+    const district = urlParams.get("district");
     if (state) {
       const statesByName = _.keyBy(this.state.states, "state_name");
       const preselectedState = statesByName?.[state];
@@ -59,7 +63,19 @@ class App extends React.Component {
         this.selectState(preselectedState.state_id);
       }
     }
-  }
+    if (district) {
+      const districtsByName = Object.assign(
+        ...Object.values(this.state.districts).map((district) =>
+          _.keyBy(district, "district_name")
+        )
+      ); // Is this the most convoluted line of code I've ever written? Probably, yes.
+      const preselectedDistrict = districtsByName?.[district];
+      if (preselectedDistrict) {
+        this.selectState(preselectedDistrict.state_id);
+        this.selectDistrict(preselectedDistrict.district_id);
+      }
+    }
+  };
 
   selectState = async (stateId) => {
     this.setState({

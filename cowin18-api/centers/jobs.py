@@ -22,10 +22,6 @@ logger = logging.getLogger(__name__)
 
 @app.task(name="cowin18.fetch_available_centers")
 def fetch_available_centers():
-    if settings.IS_SERVER:
-        logger.info("fetch_available_centers will not be run on the server")
-        return
-
     logger.info("fetch_available_centers")
     for district_id in DISTRICT_IDS:
         fetch_district.apply_async(
@@ -51,7 +47,7 @@ def query_available_centers(district_id):
     date = datetime.now() + timedelta(days=1)
     date_str = date.strftime("%d-%m-%Y")
     try:
-        url = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByDistrict?district_id={district_id}&date={date_str}"
+        url = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id={district_id}&date={date_str}"
         r = requests.get(url)
         logger.info(f"{district_id} - {r}")
         data = r.json()

@@ -1,5 +1,5 @@
 import React from "react";
-// import _ from "lodash";
+import _ from "lodash";
 import { withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -61,20 +61,28 @@ class App extends React.Component {
     });
   };
 
-  render() {
-    const { classes } = this.props;
-    const lastUpdated = this.state.selectedDistrict
-      ? `${this.state.selectedDistrictName}: Last updated - ${
-          this.state.updated?.[
+  getLastUpdatedText = () => {
+    const districts = this.state.districts?.[this.state.selectedState];
+    if (!districts) return "";
+    const districtsById = _.keyBy(districts, "district_id");
+    const selectedDistrictName =
+      districtsById?.[this.state.selectedDistrict]?.district_name ?? "";
+    return this.state.selectedDistrict
+      ? `${selectedDistrictName}: Last updated - ${
+          this.state.updated?.[this.state.selectedState]?.[
             `DISTRICT_UPDATED_${this.state.selectedDistrict}`
           ] ?? "never"
         }`
       : "";
+  };
+
+  render() {
+    const { classes } = this.props;
 
     return (
       <div>
         <MuiAlert elevation={2} variant="filled" severity="warning">
-          The data here could be outdated. {lastUpdated}
+          The data here could be outdated. {this.getLastUpdatedText()}
         </MuiAlert>
         <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel id="state-selector-label">State</InputLabel>
@@ -115,8 +123,9 @@ class App extends React.Component {
         </FormControl>
         <CentersTable
           data={
-            this.state.centers?.[`DISTRICT_${this.state.selectedDistrict}`] ??
-            []
+            this.state.centers?.[this.state.selectedState]?.[
+              `DISTRICT_${this.state.selectedDistrict}`
+            ] ?? []
           }
         />
       </div>

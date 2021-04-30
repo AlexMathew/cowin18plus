@@ -7,6 +7,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MuiAlert from "@material-ui/lab/Alert";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import cowin18 from "./api/cowin18";
 import CentersTable from "./CentersTable";
 
@@ -15,10 +17,15 @@ const styles = (theme) => ({
     margin: theme.spacing(1),
     minWidth: theme.spacing(40),
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "white",
+  },
 });
 
 class App extends React.Component {
   state = {
+    loading: false,
     states: [],
     districts: {},
     selectedState: "",
@@ -28,13 +35,20 @@ class App extends React.Component {
   };
 
   async componentDidMount() {
-    const resp = await cowin18.get("/districts/");
-    const states = resp.data.states;
-    const districts = resp.data.districts;
-    this.setState({
-      states,
-      districts,
-    });
+    try {
+      this.setState({ loading: true });
+      const resp = await cowin18.get("/districts/");
+      const states = resp.data.states;
+      const districts = resp.data.districts;
+      this.setState({
+        states,
+        districts,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   handleStateSelection = async (event) => {
@@ -44,13 +58,20 @@ class App extends React.Component {
       selectedDistrict: "",
     });
     if (!Object.keys(this.state.centers).includes(stateId.toString())) {
-      const resp = await cowin18.get("/centers/", { params: { stateId } });
-      const updated = resp.data.updated;
-      const centers = resp.data.centers;
-      this.setState({
-        centers: { ...this.state.centers, [stateId]: centers },
-        updated: { ...this.state.updated, [stateId]: updated },
-      });
+      try {
+        this.setState({ loading: true });
+        const resp = await cowin18.get("/centers/", { params: { stateId } });
+        const updated = resp.data.updated;
+        const centers = resp.data.centers;
+        this.setState({
+          centers: { ...this.state.centers, [stateId]: centers },
+          updated: { ...this.state.updated, [stateId]: updated },
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ loading: false });
+      }
     }
   };
 
@@ -81,6 +102,9 @@ class App extends React.Component {
 
     return (
       <div>
+        <Backdrop className={classes.backdrop} open={this.state.loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <MuiAlert elevation={2} variant="filled" severity="warning">
           The data here could be outdated. {this.getLastUpdatedText()}
         </MuiAlert>

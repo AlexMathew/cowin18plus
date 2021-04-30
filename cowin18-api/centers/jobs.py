@@ -9,7 +9,8 @@ from cowin18.celery import app
 from helpers.instances import redis
 
 from .constants import (
-    DISTRICT_IDS,
+    STATES_DATA,
+    DISTRICTS_DATA,
     DISTRICT_KEY,
     DISTRICT_UPDATE_TIME_KEY,
 )
@@ -20,10 +21,11 @@ logger = logging.getLogger(__name__)
 @app.task(name="cowin18.fetch_available_centers")
 def fetch_available_centers():
     logger.info("fetch_available_centers")
-    for district_id in DISTRICT_IDS:
-        fetch_district.apply_async(
-            (district_id,),
-        )
+    for state in STATES_DATA:
+        for district in DISTRICTS_DATA[state["state_id"]]:
+            fetch_district.apply_async(
+                (district["district_id"],),
+            )
 
 
 def structure_center_details(center):

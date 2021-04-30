@@ -8,28 +8,19 @@ from rest_framework import status
 from helpers.instances import redis
 
 from .constants import (
+    STATES_DATA,
+    DISTRICTS_DATA,
     DISTRICT_KEY,
     DISTRICT_UPDATE_TIME_KEY,
 )
-
-directory = os.path.dirname(__file__)
 
 
 class DistrictsListView(APIView):
     def get(self, request):
         data = {
-            "states": [],
-            "districts": {},
+            "states": STATES_DATA,
+            "districts": DISTRICTS_DATA,
         }
-        with open(os.path.join(directory, "districts/states.json")) as f:
-            states = json.load(f)
-            data["states"] = states["states"]
-            for state in states["states"]:
-                with open(
-                    os.path.join(directory, f"districts/{state['state_id']}.json")
-                ) as f:
-                    districts = json.load(f)
-                    data["districts"][state["state_id"]] = districts["districts"]
 
         return Response(data)
 
@@ -46,11 +37,8 @@ class CentersListView(APIView):
         data = {}
 
         try:
-            with open(os.path.join(directory, f"districts/{state_id}.json")) as f:
-                districts = json.load(f)
-                district_ids = [
-                    district["district_id"] for district in districts["districts"]
-                ]
+            districts = DISTRICTS_DATA[int(state_id)]
+            district_ids = [district["district_id"] for district in districts]
             centers = {
                 DISTRICT_KEY(district_id): sorted(
                     json.loads(redis.get(DISTRICT_KEY(district_id)) or "[]"),
@@ -72,7 +60,7 @@ class CentersListView(APIView):
                 "centers": centers,
             }
 
-        except FileNotFoundError:
+        except (KeyError, ValueError):
             return Response(
                 {"error": "Invalid `state_id`"},
                 status=status.HTTP_400_BAD_REQUEST,

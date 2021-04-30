@@ -1,5 +1,5 @@
-import os
 import json
+import itertools
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -66,4 +66,42 @@ class CentersListView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        return Response(data)
+
+
+class CentersListV1View(APIView):
+    def get(self, request):
+        district_ids = list(
+            itertools.chain(
+                *[
+                    [
+                        district["district_id"]
+                        for district in DISTRICTS_DATA[state["state_id"]]
+                    ]
+                    for state in STATES_DATA
+                ]
+            )
+        )
+
+        centers = {
+            DISTRICT_KEY(district_id): sorted(
+                json.loads(redis.get(DISTRICT_KEY(district_id)) or "[]"),
+                key=lambda center: center["name"],
+            )
+            for district_id in district_ids
+        }
+        updated = {
+            DISTRICT_UPDATE_TIME_KEY(district_id): (
+                (redis.get(DISTRICT_UPDATE_TIME_KEY(district_id)) or b"").decode(
+                    "utf-8"
+                )
+                or None
+            )
+            for district_id in district_ids
+        }
+        data = {
+            "districts": [],
+            "updated": updated,
+            "centers": centers,
+        }
         return Response(data)

@@ -27,10 +27,10 @@ class DistrictsListView(APIView):
 
 class CentersListView(APIView):
     def get(self, request):
-        state_id = request.query_params["state_id"]
+        state_id = request.query_params.get("stateId")
         if not state_id:
             return Response(
-                {"error": "`state_id` query param should be provided"},
+                {"error": "`stateId` query param should be provided"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -62,7 +62,7 @@ class CentersListView(APIView):
 
         except (KeyError, ValueError):
             return Response(
-                {"error": "Invalid `state_id`"},
+                {"error": "Invalid `stateId`"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

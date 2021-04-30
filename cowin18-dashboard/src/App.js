@@ -23,6 +23,8 @@ class App extends React.Component {
     districts: {},
     selectedState: "",
     selectedDistrict: "",
+    centers: {},
+    updated: {},
   };
 
   async componentDidMount() {
@@ -35,12 +37,21 @@ class App extends React.Component {
     });
   }
 
-  handleStateSelection = (event) => {
+  handleStateSelection = async (event) => {
     const stateId = event.target.value;
     this.setState({
       selectedState: stateId,
       selectedDistrict: "",
     });
+    if (!Object.keys(this.state.centers).includes(stateId.toString())) {
+      const resp = await cowin18.get("/centers/", { params: { stateId } });
+      const updated = resp.data.updated;
+      const centers = resp.data.centers;
+      this.setState({
+        centers: { ...this.state.centers, [stateId]: centers },
+        updated: { ...this.state.updated, [stateId]: updated },
+      });
+    }
   };
 
   handleDistrictSelection = (event) => {

@@ -1,3 +1,4 @@
+import os
 import json
 
 from rest_framework.views import APIView
@@ -11,6 +12,27 @@ from .constants import (
     DISTRICT_IDS_AND_DISTRICTS,
     DISTRICT_UPDATE_TIME_KEY,
 )
+
+directory = os.path.dirname(__file__)
+
+
+class DistrictsListView(APIView):
+    def get(self, request):
+        data = {
+            "states": [],
+            "districts": {},
+        }
+        with open(os.path.join(directory, "districts/states.json")) as f:
+            states = json.load(f)
+            data["states"] = states["states"]
+            for state in states["states"]:
+                with open(
+                    os.path.join(directory, f"districts/{state['state_id']}.json")
+                ) as f:
+                    districts = json.load(f)
+                    data["districts"][state["state_id"]] = districts["districts"]
+
+        return Response(data)
 
 
 class CentersListView(APIView):

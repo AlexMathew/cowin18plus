@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import json
 import logging
-from time import sleep
 
 import requests
 import redis
@@ -65,7 +64,6 @@ def query_available_centers(district_id):
 
 @app.task
 def fetch_district(district_id):
-    sleep(1)
     logger.info(f"Fetching for district - {district_id}")
     centers = query_available_centers(district_id)
     if centers is not None:

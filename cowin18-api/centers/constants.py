@@ -42,4 +42,4 @@ DISTRICT_IDS = [district["id"] for district in DISTRICT_IDS_AND_DISTRICTS]
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"
 DISTRICT_UPDATE_TIME_KEY = lambda district_id: f"DISTRICT_UPDATED_{district_id}"
 
-LOCAL_NGROK_URL = "https://fb8e6e92877c.ngrok.io"
+LOCAL_NGROK_URL = ""

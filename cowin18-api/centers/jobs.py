@@ -5,7 +5,6 @@ from time import sleep
 
 import requests
 import redis
-from django.conf import settings
 
 from cowin18.celery import app
 from helpers.instances import redis
@@ -14,7 +13,6 @@ from .constants import (
     DISTRICT_IDS,
     DISTRICT_KEY,
     DISTRICT_UPDATE_TIME_KEY,
-    LOCAL_NGROK_URL,
 )
 
 logger = logging.getLogger(__name__)
@@ -75,20 +73,20 @@ def fetch_district(district_id):
         redis.set(DISTRICT_UPDATE_TIME_KEY(district_id), datetime.now().strftime("%c"))
 
 
-"""
-Super hacky stuff. We can't make requests to the CoWin endpoint from AWS. 
-So instead, I'm not running it locally, then querying the local API and populating
-in prod from that.
-"""
+# """
+# Super hacky stuff. We can't make requests to the CoWin endpoint from AWS.
+# So instead, I'm not running it locally, then querying the local API and populating
+# in prod from that.
+# """
 
 
-@app.task(name="cowin18.fetch_data_from_local")
-def fetch_data_from_local():
-    if settings.IS_SERVER:
-        url = f"{LOCAL_NGROK_URL}/api/v1/centers/"
-        r = requests.get(url)
-        data = r.json()
-        for district, centers in data["centers"].items():
-            redis.set(district, json.dumps(centers))
-        for district, updated in data["updated"].items():
-            redis.set(district, updated)
+# @app.task(name="cowin18.fetch_data_from_local")
+# def fetch_data_from_local():
+#     if settings.IS_SERVER:
+#         url = f"{LOCAL_NGROK_URL}/api/v1/centers/"
+#         r = requests.get(url)
+#         data = r.json()
+#         for district, centers in data["centers"].items():
+#             redis.set(district, json.dumps(centers))
+#         for district, updated in data["updated"].items():
+#             redis.set(district, updated)

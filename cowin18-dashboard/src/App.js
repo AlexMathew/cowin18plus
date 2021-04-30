@@ -49,10 +49,19 @@ class App extends React.Component {
     } finally {
       this.setState({ loading: false });
     }
+    const urlParams = new URLSearchParams(window.location.search);
+    const state = urlParams.get("state");
+    // const district = urlParams.get("district");
+    if (state) {
+      const statesByName = _.keyBy(this.state.states, "state_name");
+      const preselectedState = statesByName?.[state];
+      if (preselectedState) {
+        this.selectState(preselectedState.state_id);
+      }
+    }
   }
 
-  handleStateSelection = async (event) => {
-    const stateId = event.target.value;
+  selectState = async (stateId) => {
     this.setState({
       selectedState: stateId,
       selectedDistrict: "",
@@ -75,11 +84,20 @@ class App extends React.Component {
     }
   };
 
-  handleDistrictSelection = (event) => {
-    const districtId = event.target.value;
+  selectDistrict = (districtId) => {
     this.setState({
       selectedDistrict: districtId,
     });
+  };
+
+  handleStateSelection = (event) => {
+    const stateId = event.target.value;
+    this.selectState(stateId);
+  };
+
+  handleDistrictSelection = (event) => {
+    const districtId = event.target.value;
+    this.selectDistrict(districtId);
   };
 
   getLastUpdatedText = () => {

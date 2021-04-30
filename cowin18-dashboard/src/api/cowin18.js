@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default axios.create({
-  baseURL: `${BASE_URL}/api/v1`,
+  baseURL: `${BASE_URL}/api/v2`,
   headers: {
     "Content-Type": "application/json",
   },

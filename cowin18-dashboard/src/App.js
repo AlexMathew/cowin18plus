@@ -1,5 +1,5 @@
 import React from "react";
-import _ from "lodash";
+// import _ from "lodash";
 import { withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -13,40 +13,40 @@ import CentersTable from "./CentersTable";
 const styles = (theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: theme.spacing(40),
   },
 });
 
 class App extends React.Component {
   state = {
-    districts: [],
-    districtsById: {},
-    updated: {},
-    centers: {},
+    states: [],
+    districts: {},
+    selectedState: "",
     selectedDistrict: "",
-    selectedDistrictName: "",
   };
 
   async componentDidMount() {
-    const resp = await cowin18.get("/centers/");
-    const centers = resp.data.centers;
-    const updated = resp.data.updated;
+    const resp = await cowin18.get("/districts/");
+    const states = resp.data.states;
     const districts = resp.data.districts;
     this.setState({
+      states,
       districts,
-      districtsById: _.keyBy(districts, "id"),
-      updated,
-      centers,
-      selectedDistrict: "571",
-      selectedDistrictName: "Chennai",
     });
   }
+
+  handleStateSelection = (event) => {
+    const stateId = event.target.value;
+    this.setState({
+      selectedState: stateId,
+      selectedDistrict: "",
+    });
+  };
 
   handleDistrictSelection = (event) => {
     const districtId = event.target.value;
     this.setState({
       selectedDistrict: districtId,
-      selectedDistrictName: this.state.districtsById?.[districtId]?.name,
     });
   };
 
@@ -65,21 +65,42 @@ class App extends React.Component {
         <MuiAlert elevation={2} variant="filled" severity="warning">
           The data here could be outdated. {lastUpdated}
         </MuiAlert>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="city-selector-label">City</InputLabel>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel id="state-selector-label">State</InputLabel>
           <Select
-            labelId="city-selector-label"
-            id="city-selector"
-            value={this.state.selectedDistrict}
-            onChange={this.handleDistrictSelection}
+            labelId="state-selector-label"
+            id="state-selector"
+            value={this.state.selectedState}
+            onChange={this.handleStateSelection}
           >
-            {this.state.districts.map((district) => (
-              <MenuItem key={district.id} value={district.id}>
-                {district.name}
+            {this.state.states.map((state) => (
+              <MenuItem key={state.state_id} value={state.state_id}>
+                {state.state_name}
               </MenuItem>
             ))}
           </Select>
-          <FormHelperText>Select City</FormHelperText>
+          <FormHelperText>Select State</FormHelperText>
+        </FormControl>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel id="district-selector-label">District</InputLabel>
+          <Select
+            labelId="district-selector-label"
+            id="district-selector"
+            value={this.state.selectedDistrict}
+            onChange={this.handleDistrictSelection}
+          >
+            {(this.state.districts?.[this.state.selectedState] ?? []).map(
+              (district) => (
+                <MenuItem
+                  key={district.district_id}
+                  value={district.district_id}
+                >
+                  {district.district_name}
+                </MenuItem>
+              )
+            )}
+          </Select>
+          <FormHelperText>Select District</FormHelperText>
         </FormControl>
         <CentersTable
           data={

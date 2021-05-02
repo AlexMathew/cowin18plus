@@ -33,7 +33,7 @@ def structure_center_details(center):
     _ = center.pop("vaccine_fees", [])
     center_sessions = []
     for session in sessions:
-        if session["min_age_limit"] < 45 and session["available_capacity"] != 0:
+        if session["min_age_limit"] < 45:
             center_copy = center.copy()
             center_copy["id"] = session["session_id"]
             center_copy.update(session)

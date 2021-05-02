@@ -17,7 +17,7 @@ app.conf.imports = "centers.jobs"
 app.conf.beat_schedule = {
     "fetch_available_centers": {
         "task": "cowin18.fetch_available_centers",
-        "schedule": crontab(minute="*/10"),
+        "schedule": crontab(minute="*/5"),
     },
     # "fetch_data_from_local": {
     #     "task": "cowin18.fetch_data_from_local",

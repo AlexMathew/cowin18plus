@@ -42,7 +42,7 @@ services:
   celery:
     <<: *cowin18
     container_name: cowin18-celery
-    command: celery -A cowin18 worker --concurrency=20 --loglevel=info
+    command: celery -A cowin18 worker --concurrency=5 --loglevel=info
 
   celery-beat:
     <<: *cowin18

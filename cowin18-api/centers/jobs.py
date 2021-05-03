@@ -13,6 +13,7 @@ from .constants import (
     DISTRICTS_DATA,
     DISTRICT_KEY,
     DISTRICT_UPDATE_TIME_KEY,
+    LIVE_UPDATES_DISTRICT_IDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,13 @@ def query_available_centers(district_id):
     date = datetime.now() + timedelta(days=1)
     date_str = date.strftime("%d-%m-%Y")
     try:
-        url = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id={district_id}&date={date_str}"
+        base_url = (
+            "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByDistrict"
+            if district_id in LIVE_UPDATES_DISTRICT_IDS
+            else "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict"
+        )
+        query_params = f"?district_id={district_id}&date={date_str}"
+        url = f"{base_url}{query_params}"
         r = requests.get(url)
         logger.info(f"{district_id} - {r}")
         data = r.json()

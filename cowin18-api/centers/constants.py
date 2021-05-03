@@ -17,5 +17,9 @@ with open(os.path.join(directory, "districts/states.json")) as f:
                 for district in districts["districts"]
             ]
 
+LIVE_UPDATES_DISTRICT_IDS = [
+    571,  # Chennai
+]
+
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"
 DISTRICT_UPDATE_TIME_KEY = lambda district_id: f"DISTRICT_UPDATED_{district_id}"

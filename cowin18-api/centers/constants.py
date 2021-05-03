@@ -18,7 +18,7 @@ with open(os.path.join(directory, "districts/states.json")) as f:
             ]
 
 LIVE_UPDATES_DISTRICT_IDS = [
-    571,  # Chennai
+    # 571,  # Chennai
 ]
 
 DISTRICT_KEY = lambda district_id: f"DISTRICT_{district_id}"
